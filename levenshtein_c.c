@@ -8,103 +8,103 @@ int lstrlenW_a(wchar_t* lpString);
 int lstrlenW(wchar_t* lpString) {
 	for (int i = 0; ; i++) if (lpString[i] == 0) return i;
 }
-void* utworz_i_zainicjuj_a(unsigned int m, unsigned int n);
-void* utworz_i_zainicjuj(unsigned int m, unsigned int n) {
-	int** tablica = (int**)malloc((n + 1) * sizeof(int*));
+void* create_and_initialise_a(unsigned int m, unsigned int n);
+void* create_and_initialise(unsigned int m, unsigned int n) {
+	int** table = (int**)malloc((n + 1) * sizeof(int*));
 	for (unsigned int i = 0; i < n + 1; i++)
-		tablica[i] = (int*)malloc((m + 1) * sizeof(int));
+		table[i] = (int*)malloc((m + 1) * sizeof(int));
 	for (unsigned int i = 0; i < n + 1; i++)
 		for (unsigned int j = 0; j < m + 1; j++) {
 			if (i == 0)
-				tablica[0][j] = j;
+				table[0][j] = j;
 			else if (j == 0)
-				tablica[i][0] = i;
+				table[i][0] = i;
 			else
-				tablica[i][j] = 0;
+				table[i][j] = 0;
 		}
-	return tablica;
+	return table;
 }
 int min3(int a, int b, int c) {
-	int bufor = a;
-	if (b < bufor) bufor = b;
-	if (c < bufor) bufor = c;
-	return bufor;
+	int buffer = a;
+	if (b < buffer) buffer = b;
+	if (c < buffer) buffer = c;
+	return buffer;
 }
-void ustaw_ij_a(int* tablica, wchar_t a, wchar_t b, unsigned int i, unsigned int j, unsigned int m);
-void ustaw_ij(int** tablica, wchar_t a, wchar_t b, unsigned int i, unsigned int j, unsigned int m) {
-	int x = tablica[i][j - 1] + 1;
-	int y = tablica[i - 1][j] + 1;
-	int z = tablica[i - 1][j - 1];
+void set_ij_a(int* table, wchar_t a, wchar_t b, unsigned int i, unsigned int j, unsigned int m);
+void set_ij(int** table, wchar_t a, wchar_t b, unsigned int i, unsigned int j, unsigned int m) {
+	int x = table[i][j - 1] + 1;
+	int y = table[i - 1][j] + 1;
+	int z = table[i - 1][j - 1];
 	if (a != b) z += 1;
-	tablica[i][j] = min3(x, y, z);
+	table[i][j] = min3(x, y, z);
 }
-unsigned int levenshtain_a(wchar_t* napisA, wchar_t* napisB);
-unsigned int levenshtain(wchar_t* napisA, wchar_t* napisB) {
-	unsigned int m = lstrlenW(napisA);
-	unsigned int n = lstrlenW(napisB);
-	int** tablica = (int**)utworz_i_zainicjuj(m, n);
+unsigned int levenshtein_a(wchar_t* stringA, wchar_t* stringB);
+unsigned int levenshtein(wchar_t* stringA, wchar_t* stringB) {
+	unsigned int m = lstrlenW(stringA);
+	unsigned int n = lstrlenW(stringB);
+	int** table = (int**)create_and_initialise(m, n);
 
 	for (unsigned int i = 1; i < n + 1; i++)
 		for (unsigned int j = 1; j < m + 1; j++)
-			ustaw_ij(tablica, napisA[j - 1], napisB[i - 1], i, j, m);
-	unsigned int odleglosc = tablica[n][m];
+			set_ij(table, stringA[j - 1], stringB[i - 1], i, j, m);
+	unsigned int distance = table[n][m];
 
 	for (unsigned int i = 0; i < n + 1; i++) {
 		for (unsigned int j = 0; j < m + 1; j++)
-			printf("%d ", tablica[i][j]);
+			printf("%d ", table[i][j]);
 		printf("\n");
 	}
 
 	for (int i = 0; i < n + 1; i++)
-		free(tablica[i]);
-	free(tablica);
+		free(table[i]);
+	free(table);
 
-	return odleglosc;
+	return distance;
 }
 int main() {
-	printf("%d\n", levenshtain(L"fakty", L"aktywa"));
-	printf("%d", levenshtain_a(L"fakty", L"aktywacja"));
-	//printf("%d", levenshtain_a(L"jacenty", L"jacek"));
-	/*int tablica[6][8] = { { 0, 1, 2, 3, 4, 5, 6, 7 },
+	printf("%d\n", levenshtein(L"fakty", L"aktywa"));
+	printf("%d", levenshtein_a(L"fakty", L"aktywacja"));
+	//printf("%d", levenshtein_a(L"jacenty", L"jacek"));
+	/*int table[6][8] = { { 0, 1, 2, 3, 4, 5, 6, 7 },
 					      { 1, 0, 1, 2, 3, 4, 5, 6 },
 					      { 2, 1, 0, 1, 2, 3, 4, 5 },
 					      { 3, 2, 1, 0, 1, 2, 3, 4 },
 					      { 4, 3, 2, 1, 0, 1, 2, 3 },
 					      { 5, 4, 3, 2, 1, 1, 2, 3 }, };*/
-	int tablica[6][8] = { { 0, 1, 2, 3, 4, 5, 6, 7 },
+	int table[6][8] = { { 0, 1, 2, 3, 4, 5, 6, 7 },
 					      { 1, 0, 0, 0, 0, 0, 0, 0 },
 					      { 2, 0, 0, 0, 0, 0, 0, 0 },
 					      { 3, 0, 0, 0, 0, 0, 0, 0 },
 					      { 4, 0, 0, 0, 0, 0, 0, 0 },
 					      { 5, 0, 0, 0, 0, 0, 0, 0 }, };
 
-	int* tablica_a = (int*)utworz_i_zainicjuj_a(7, 5);
+	int* table_a = (int*)create_and_initialise_a(7, 5);
 	printf("\n");
-	printf("pusta tablica_a\n");
+	printf("empty table_a\n");
 	for (unsigned int i = 0; i < 5 + 1; i++) {
 		for (unsigned int j = 0; j < 7 + 1; j++)
-			printf("%d ", tablica_a[i * 8 + j]);
+			printf("%d ", table_a[i * 8 + j]);
 		printf("\n");
 	}
 
 	printf("\n");
-	printf("pusta tablica\n");
+	printf("empty table\n");
 	for (unsigned int i = 0; i < 5 + 1; i++) {
 		for (unsigned int j = 0; j < 7 + 1; j++)
-			printf("%d ", tablica[i][j]);
+			printf("%d ", table[i][j]);
 		printf("\n");
 	}
 	wchar_t* a = L"jacenty";
 	wchar_t* b = L"jacek";
-	levenshtain_a(a, b);
+	levenshtein_a(a, b);
 	for (unsigned int i = 1; i < lstrlenW_a(b) + 1; i++)
 		for (unsigned int j = 1; j < lstrlenW_a(a) + 1; j++)
-			ustaw_ij_a(tablica, a[j - 1], b[i - 1], i, j, lstrlenW_a(a));
+			set_ij_a(table, a[j - 1], b[i - 1], i, j, lstrlenW_a(a));
 	printf("\n");
-	printf("tablica wypelniona przez ustaw_ij_a\n");
+	printf("table set_ij_a\n");
 	for (unsigned int i = 0; i < 5 + 1; i++) {
 		for (unsigned int j = 0; j < 7 + 1; j++)
-			printf("%d ", tablica[i][j]);
+			printf("%d ", table[i][j]);
 		printf("\n");
 	}
 	return 0;
